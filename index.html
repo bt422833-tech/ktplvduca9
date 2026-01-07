@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Trắc nghiệm KTPL+ Đúng Sai( vanduc )</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+.question { margin-bottom: 20px; }
+.correct { color: green; font-weight: bold; }
+.wrong { color: red; font-weight: bold; }
+button { padding: 10px 18px; margin: 10px 5px; font-size: 15px; }
+.answer-detail { margin-top:5px; padding-left:15px; }
+label { display:block; margin:2px 0; }
+h2 { margin-top:40px; }
+</style>
+</head>
+<body>
+
+<h2>TRẮC NGHIỆM KINH TẾ PHÁP LUẬT (50 câu)</h2>
+<form id="quiz"></form>
+<h2>ĐÚNG SAI KINH TẾ PHÁP LUẬT (7 câu)</h2>
+<form id="dsquiz"></form>
+
+<button onclick="submitAll()">Nộp bài</button>
+<h3 id="result"></h3>
+
+<script>
+// ---------------- 30 câu trắc nghiệm ----------------
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+}
+
+let mcq = [
+{q:"Câu 1: Sự tăng lên về quy mô sản lượng của nền kinh tế là?", a:["Thu nhập quốc dân","Phát triển bền vững","Tăng trưởng kinh tế","Phát triển kinh tế"], c:2},
+{q:"Câu 2: Giá trị bằng tiền của tất cả hàng hóa dịch vụ cuối cùng?", a:["GNI","GDP","GNI/đầu người","GDP/đầu người"], c:1},
+{q:"Câu 3: Khi đánh giá phát triển kinh tế không căn cứ?", a:["Chuyển dịch cơ cấu kinh tế","Lạm phát và thất nghiệp","Tiến bộ và công bằng xã hội","Tốc độ tăng trưởng kinh tế"], c:1},
+{q:"Câu 4: GNI thể hiện nội dung nào?", a:["Tổng thu nhập quốc dân","Tổng thu nhập quốc dân theo đầu người","Tổng sản phẩm quốc nội theo đầu người","Tổng sản phẩm quốc nội"], c:0},
+{q:"Câu 5: Nguyên nhân không làm HDI thấp dù GDP cao?", a:["Phát triển không đồng đều","GDP không tính giáo dục y tế","Thu nhập tập trung vào người giàu","Đầu tư mạnh vào phát triển con người"], c:3},
+{q:"Câu 6:tổng Thu nhập từ hàng hóa dịch vụ do công dân của nước đó tạo ra trong 1 năm là?", a:["GDP","GNI","GDP/người","GNI/người"], c:1},
+{q:"Câu 7: GDP/người thể hiện nội dung nào?", a:["Tổng sản phẩm quốc nội","Tổng sản phẩm quốc dân","Tổng sản phẩm quốc dân theo đầu người","Tổng sản phẩm quốc nội theo đầu người"], c:3},
+{q:"Câu 8: Trong phát triển kinh tế, chỉ số nào không thuộc tiêu chí tiến bộ xã hội?", a:["Phát triển con người","Bất bình đẳng xã hội","Đói nghèo","Chuyển dịch cơ cấu"], c:3},
+{q:"Câu 9: Nội dung nào không thể hiện vai trò tăng trưởng kinh tế?", a:["Phát triển văn hóa giáo dục","Giải quyết công ăn việc làm","Nâng cao phúc lợi xã hội","Khai thác cạn kiệt tài nguyên"], c:3},
+{q:"Câu 10: Vai trò của tăng trưởng và phát triển kinh tế?", a:["Tăng tỷ lệ đói nghèo","Gia tăng phân hóa giàu nghèo","Giải quyết việc làm","Gia tăng lệ thuộc thế giới"], c:2},
+{q:"Câu 11: Thỏa thuận ưu đãi thuế quan giữa các quốc gia là?", a:["Hiệp định thương mại tự do","Thoả thuận thương mại ưu đãi","Thị trường chung","Liên minh kinh tế"], c:1},
+{q:"Câu 12: Lợi ích khi tham gia hội nhập kinh tế với các nước đang phát triển?", a:["Lệ thuộc tài chính vào nước lớn","Tận dụng được nguồn tài chính","Mở rộng lãnh thổ","Trở thành nước lớn"], c:1},
+{q:"Câu 13: Quá trình quốc gia thực hiện quan hệ kinh tế quốc tế có lợi cho cả hai là?", a:["Phát triển kinh tế","Tăng trưởng kinh tế","Kinh tế đối ngoại","Hội nhập kinh tế"], c:3},
+{q:"Câu 14: quá trình liên kết, gắn kết các quốc gia, vùng lãnh thổ với nhau thông qua việc tham gia vào các tổ chức kinh tế toàn cầu là hình thức hội nhập nào", a:["Khu vực","Song phương","Toàn cầu","Toàn diện"], c:2},
+{q:"Câu 15: Hình thức hội nhập sâu rộng nhất?", a:["Hội nhập liên minh","Hội nhập song phương","Hội nhập khu vực","Hội nhập toàn cầu"], c:3},
+{q:"Câu 16: Hoạt động kinh tế đối ngoại không gồm?", a:["Thương mại nội địa","Thương mại quốc tế","Dịch vụ thu ngoại tệ","Đầu tư quốc tế"], c:0},
+{q:"Câu 17: Hiệp định Việt Nam – Chile là hợp tác ở cấp độ?", a:["Khu vực","Song phương","Châu lục","Toàn cầu"], c:1},
+{q:"Câu 18: APEC và ASEM là hình thức hợp tác?", a:["Toàn cầu","Khu vực","Song phương","Quốc tế"], c:1},
+{q:"Câu 19: Quá trình di chuyển vốn giữa quốc gia là?", a:["Thỏa thuận thương mại","Đầu tư quốc tế","Thương mại quốc tế","Liên minh kinh tế"], c:1},
+{q:"Câu 20: Gia nhập WTO là cấp độ hội nhập?", a:["Song phương","Khu vực","Toàn cầu","Đa phương"], c:2},
+{q:"Câu 21: Người tham gia BHXH bắt buộc không hưởng chế độ nào?", a:["Học nghề","Hưu trí","Thai sản","Ốm đau"], c:0},
+{q:"Câu 22: BH do Nhà nước tổ chức, bắt buộc phải tham gia?", a:["Bảo hiểm thân thể","BHXH tự nguyện","BHXH bắt buộc","Bảo hiểm tài sản"], c:2},
+{q:"Câu 23: BHXH do Nhà nước tổ chức, người tham gia được chọn mức đóng phù hợp với thu nhập của mình?", a:["Bảo hiểm trách nhiệm dân sự","Bảo hiểm thất nghiệp","Bảo hiểm y tế tự nguyện","BHXH tự nguyện"], c:3},
+{q:"Câu 24: Người tham gia BHXH bắt buộc không trả trợ cấp nào?", a:["Bệnh nghề nghiệp","Tử tuất","Trợ cấp lưu trú","Tai nạn lao động"], c:2},
+{q:"Câu 25: Mua BH xe máy là loại hình gì?", a:["Bảo hiểm y tế","Bảo hiểm thương mại","Bảo hiểm xã hội","Bảo hiểm thất nghiệp"], c:1},
+{q:"Câu 26: Người tham gia BH tự nguyện nhận quyền lợi nào?", a:["Bệnh nghề nghiệp","Chế độ ốm đau","Tai nạn lao động","Tử tuất"], c:1},
+{q:"Câu 27: Người tham gia BHXH bắt buộc nếu đủ điều kiện được hưởng?", a:["Trợ cấp ăn trưa","Trợ cấp học tập","Công tác phí","Trợ cấp ốm đau"], c:3},
+{q:"Câu 28: Bảo hiểm chỉ có bắt buộc không có tự nguyện?", a:["Bảo hiểm y tế","Bảo hiểm thất nghiệp","BHXH","Bảo hiểm thương mại"], c:1},
+{q:"Câu 29: BHYT chi trả khi bệnh tật hoặc tai nạn?", a:["Một phần hoặc toàn bộ chi phí","Chỉ trả theo nhu cầu","Chi trả toàn bộ","Tùy mức thu nhập"], c:0},
+{q:"Câu 30: Vai trò BH với kinh tế, xã hội không phải?", a:["Tạo công ăn việc làm","Ổn định ngân sách","Huy động vốn nhàn rỗi","Gia tăng lạm phát"], c:3},
+{q:"Câu 31: Chính sách can thiệp giảm nghèo, ổn định xã hội là?", a:["Ổn định xã hội","An sinh xã hội","Điều tiết xã hội","Quản lý xã hội"], c:1},
+{q:"Câu 32: Sai về vai trò an sinh xã hội?", a:["Phát huy tinh thần đoàn kết","Góp phần bội chi ngân sách","Nâng cao hiệu quả quản lý","Thúc đẩy kinh tế phát triển"], c:1},
+{q:"Câu 33: An sinh xã hội thúc đẩy?", a:["Sự phân hóa giàu nghèo","Phát triển kinh tế - xã hội","Thất nghiệp","Lạm phát"], c:1},
+{q:"Câu 34: Mục tiêu an sinh về bảo hiểm nhằm?", a:["Xóa đói giảm nghèo","Xóa nhà tạm","Phòng ngừa rủi ro","Phòng ngừa thất nghiệp"], c:2},
+{q:"Câu 35: Lợi ích cho đối tượng được hưởng an sinh xã hội?", a:["Hưởng thu nhập vô điều kiện","Hoàn trả lợi ích đã mất","Khắc phục và giảm thiểu rủi ro","Hỗ trợ miễn phí trọn đời"], c:2},
+{q:"Câu 36: Hỗ trợ gạo dịp Tết là chính sách?", a:["Hỗ trợ BH","Trợ giúp xã hội","Trợ giúp việc làm","Hỗ trợ thu nhập"], c:1},
+{q:"Câu 37: An sinh xã hội là tiêu chí đánh giá?", a:["Bất công xã hội","Vi phạm dân quyền","Phát triển kinh tế","Tiến bộ xã hội"], c:3},
+{q:"Câu 38: Chính sách trợ giúp xã hội đối với công dân thể hiện qua?", a:["Trợ cấp người cao tuổi","Tiêm vaccine cho trẻ","Phổ cập mầm non 5 tuổi","Giảm thất nghiệp"], c:0},
+{q:"Câu 39: Cấp phát thẻ BHYT miễn phí là?", a:["Trợ giúp xã hội","Bảo hiểm xã hội","Đền ơn đáp nghĩa","Bảo đảm dịch vụ"], c:3},
+{q:"Câu 40: Vai trò an sinh xã hội không gồm?", a:["Xóa đói giảm nghèo","Hỗ trợ việc làm","Xóa 100% nhà tạm","Thu hẹp chênh lệch"], c:2},
+{q:"Câu 41: Bản trình bày ý tưởng kinh doanh gọi là?", a:["Chiến lược kinh doanh","Kế hoạch kinh doanh","Mục tiêu tài chính","Kế hoạch tài chính"], c:1},
+{q:"Câu 42: Kế hoạch kinh doanh không bao gồm?", a:["Thuận lợi và khó khăn","Ý tưởng kinh doanh","Tên kế hoạch kinh doanh","Thời điểm thành công"], c:3},
+{q:"Câu 43: Sai về ý nghĩa lập kế hoạch kinh doanh?", a:["Giúp đạt mục tiêu","Tăng lợi nhuận ngay","Tăng khả năng huy động vốn","Duy trì thị trường và quan hệ khách hàng"], c:1},
+{q:"Câu 44: Phân tích nhân sự không cần?", a:["Số lượng nhân sự","Chất lượng nhân sự","Kỹ năng chuyên môn","Quan hệ gia đình"], c:3},
+{q:"Câu 45: Mục đích lập kế hoạch kinh doanh không?", a:["Xác định mục tiêu","Đưa phương hướng","Xác định chiến lược thị trường","Đưa ra thời gian thành công"], c:3},
+{q:"Câu 46: Cần thiết nhất khi khởi sự doanh nghiệp?", a:["Phương hướng kinh doanh","Kiên nhẫn và kiên trì","Mạng lưới quan hệ","Kế hoạch chi tiết"], c:3},
+{q:"Câu 47: Đóng góp quỹ an sinh, xoá đói giảm nghèo là trách nhiệm?", a:["Nhân văn","Kinh tế","Pháp lý","Đạo đức"], c:0},
+{q:"Câu 48: Mở rộng kinh doanh, tạo việc làm là trách nhiệm?", a:["trách nhiệm Pháp lý","trách nhiệm Kinh tế","trách nhiệm Đạo đức","trách nhiệm Nhân văn"], c:1},
+{q:"Câu 49: Khi tiến hành hoạt động kinh doanh các doanh nghiệp thực hiện tốt trách nhiệm pháp lý khi chủ động", a:["Xóa đầu cơ","Tuân thủ pháp luật về môi trường","San bằng thất nghiệp","Tuyển dụng trực tuyến"], c:1},
+{q:"Câu 50: Khám chữa bệnh miễn phí, xây nhà tình nghĩa thể hiện?", a:["Nhân văn","Đạo đức","Pháp lý","Kinh tế"], c:0}
+];
+
+shuffle(mcq);
+
+let quiz = document.getElementById("quiz");
+mcq.forEach((x,i)=>{
+  let answers = x.a.map((text,index)=>({text, index}));
+  shuffle(answers);
+  x.shuffledAnswers = answers;
+  quiz.innerHTML += `<div class="question" id="q${i}">
+    <b>${x.q}</b><br>` +
+    answers.map(o=>`<label><input type="radio" name="q${i}" value="${o.index}"> ${o.text}</label>`).join("") +
+  `</div>`;
+});
+
+// ---------------- 6 câu đúng sai ----------------
+let dsq = [
+  {q:"Câu 1: trong những năm qua sản xuất và xuất khẩu nông sản đã tạo nên những dấu ấn quan trọng:", a:[
+      "VN xuất khẩu nông sản đến 180 Quốc gia thể hiện hình thức dịch vụ thu ngoại tệ",
+      "Trung Quốc và Hoa Kỳ là hai đối tác lớn của Việt Nam",
+      "Từ năm 2010 đến năm 2020 ( dài quá dell ghi đâu) ",
+      "dịch vụ thu ngoại tệ của Việt Nam tăng đáng kể từ 2k10->2k20"
+    ], c:[0,1,1,0]
+  },
+  {q:"Câu 2: Anh Đức hiện là chủ tịch HDPE :", a:[
+      "theo quy định của Pháp luật anh Đ đc nghỉ 7 ngày khi vợ phẫu thuật",
+      "Anh Đ Được hưởng loại bảo hình thất nghiệp",
+      "Anh Đ ko đc nhận lương từ cty",
+      "loại bảo hiểm a tham gia ở cty a là bhxh tự nguyện"
+    ], c:[1,0,1,0]
+  },
+  {q:"Câu 3: Về Công ty Cổ phần X:", a:[
+      "Công ty X đã hoàn thành tốt trách nhiệm kinh tế và pháp lý, đồng thời thực hiện trách nhiệm đạo đức và nhân văn",
+      "Công ty X đang gặp vấn đề kinh tế và pháp lý nhưng nỗ lực thực hiện trách nhiệm nhân văn",
+      "Việc sa thải công nhân và gây ô nhiễm là hoàn toàn thiếu trách nhiệm xã hội",
+      "Công ty X chỉ tập trung vào trách nhiệm nhân văn mà bỏ qua kinh tế, pháp lý và đạo đức"
+    ], c:[0,1,0,0]
+  },
+  {q:"Câu 4: Về chính sách nhà ở xã hội:", a:[
+      "Luật Nhà ở 2014 quy định chính sách hỗ trợ cơ bản thuộc trợ giúp xã hội",
+      "Việt Nam cần chính sách bảo hiểm nhà ở để hỗ trợ người thu nhập thấp",
+      "Thực hiện chính sách nhà ở là thực hiện chính sách dịch vụ xã hội",
+      "Giải quyết nhà ở xã hội là trách nhiệm của toàn xã hội"
+    ], c:[0,0,1,1]
+  },
+  {q:"Câu 5: Về ông T và doanh nghiệp tư nhân:", a:[
+      "theo quy định của pháp luật Ông T không thuộc đối tượng phải tham gia BHXH bắt buộc",
+      "Việc ông T không đóng BHXH cho người lao động là đúng quy định pháp luật",
+      "Sự hỗ trợ của ông T cho địa phương thể hiện tốt trách nhiệm nhân văn",
+      "Việc tạo công trình như thông tin thể hiện ông T thực hiện tốt trách nhiệm kinh tế"
+    ], c:[0,0,1,1]
+  },
+  {q:"Câu 6: Đại dịch cô vít 19", a:[
+      "Ngành bảo hiểm xã hội Việt Nam đã chi trả gói hỗ trợ là dựa vào lợi thế của công nghệ thông tin ",
+      "số tiền 845 tỷ đồng là con số bảo hiểm xã hội",
+      "298000 người đc nhận hỗ trợ",
+      "bảo hiểm đc đề cập đến là bảo hiểm thất nghiệp"
+    ], c:[1,1,0,1]
+  },
+  {q:"Câu 7: Tập Đoàn Hoà phát:", a:[
+      "Tập đoàn Hoà phát đã thực hiện hình thức đầu tư quốc tế",
+      "việc HP xây dựng các khu liên hợp gang thép để đảm bảo nguồn nguyên liệu ổn định",
+      "TẬP ĐOÀN HP đã thực hiện trách nhiệm hội nhập quốc tế ",
+      "Tập đoàn HP đã thực hiện tốt trách nhiệm pháp lý, kinh tế nhân văn của doanh nghiệp"
+    ], c:[0,0,1,1]
+  }
+];
+let dsquiz = document.getElementById("dsquiz");
+dsq.forEach((x,i)=>{
+  dsquiz.innerHTML += `<div class="question" id="dsq${i}">
+    <b>${x.q}</b><br>` +
+    x.a.map((txt,j)=>`
+      <label>
+        <input type="radio" name="q${i}_${j}" value="1"> Đúng
+        <input type="radio" name="q${i}_${j}" value="0"> Sai
+        ${txt}
+      </label>`).join("") +
+  `</div>`;
+});
+// ---------------- Submit ----------------
+function submitAll(){
+  let score1=0, score2=0;
+
+  // Trắc nghiệm
+  mcq.forEach((x,i)=>{
+    let div = document.getElementById("q"+i);
+    let r = document.querySelector(`input[name="q${i}"]:checked`);
+    let user = r ? parseInt(r.value) : null;
+    if(user === x.c) score1++;
+    div.innerHTML += `<div class="answer-detail">Bạn chọn: <span class="${user===x.c?'correct':'wrong'}">${user!==null ? x.a[user]:'Chưa chọn'}${user===x.c?' ✅':' ❌'}</span> - Đáp án: <span class="correct">${x.a[x.c]}</span></div>`;
+  });
+
+  // Đúng sai
+  dsq.forEach((x,i)=>{
+    let div = document.getElementById("dsq"+i);
+    let details = "";
+    x.a.forEach((txt,j)=>{
+      let r = document.querySelector(`input[name="q${i}_${j}"]:checked`);
+      let user = r ? parseInt(r.value) : null;
+      let correct = x.c[j];
+      if(user === correct) score2++;
+      details += `<div class="answer-detail">
+        Ý: ${txt} - Bạn chọn: <span class="${user===correct?'correct':'wrong'}">${user!==null ? (user?'Đúng':'Sai'):'Chưa chọn'}${user===correct?' ✅':' ❌'}</span> - Đáp án: <span class="correct">${correct?'Đúng':'Sai'}</span>
+      </div>`;
+    });
+    div.innerHTML += details;
+  });
+
+  document.getElementById("result").innerText = `Điểm trắc nghiệm: ${score1}/50 - Điểm đúng/sai: ${score2}/28`;
+}
+</script>
+</body>
+  </html>
+  
