@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Trắc nghiệm KTPL+ Đúng Sai( vanduc )</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+.question { margin-bottom: 20px; }
+.correct { color: green; font-weight: bold; }
+.wrong { color: red; font-weight: bold; }
+button { padding: 10px 18px; margin: 10px 5px; font-size: 15px; }
+.answer-detail { margin-top:5px; padding-left:15px; }
+label { display:block; margin:2px 0; }
+h2 { margin-top:40px; }
+</style>
+</head>
+<body>
+
+<h2>TRẮC NGHIỆM CÔNG NGHỆ (25 câu)</h2>
+<form id="quiz"></form>
+<h2>ĐÚNG SAI CÔNG NGHỆ (3 câu)</h2>
+<form id="dsquiz"></form>
+
+<button onclick="submitAll()">Nộp bài</button>
+<h3 id="result"></h3>
+
+<script>
+// ---------------- 30 câu trắc nghiệm ----------------
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+}
+
+let mcq = [
+{q:"Câu 1: Mục tiêu của sản xuất điện là", a:[
+"Tạo ra điện từ việc chuyển đổi các dạng năng lượng khác nhau thành năng lượng điện",
+"Đưa điện từ nguồn đến nơi tiêu thụ",
+"Nghiên cứu, chế tạo thiết bị điện",
+"Nghiên cứu vật liệu composite làm dây dẫn"
+], c:0},
+
+{q:"Câu 2: Yêu cầu về trình độ đối với kĩ sư thiết kế điện là", a:[
+"Trình độ đại học ngành kĩ thuật điện",
+"Trình độ cao đẳng nghề kĩ thuật điện",
+"Trình độ trung cấp nghề kĩ thuật điện",
+"Tốt nghiệp THPT"
+], c:0},
+
+{q:"Câu 3: Nguồn điện ba pha được nối", a:[
+"Nối hình sao",
+"Nối hình tam giác",
+"Nối hình sao có dây trung tính",
+"Nối hình sao, hình sao có dây trung tính và tam giác"
+], c:3},
+
+{q:"Câu 4: Tải tiêu thụ là", a:[
+"Tập hợp thiết bị giám sát lưới điện",
+"Các thiết bị tiêu thụ điện, biến điện năng thành dạng năng lượng khác",
+"Thiết bị đảm bảo an toàn truyền tải điện",
+"Các nhà máy điện nối vào lưới"
+], c:1},
+
+{q:"Câu 5: Ưu điểm của điện gió là", a:[
+"Năng lượng tái tạo, sạch, vô tận",
+"Chi phí đầu tư thấp",
+"Công suất lớn, ổn định",
+"Không gây ô nhiễm tiếng ồn"
+], c:0},
+
+{q:"Câu 6: Vai trò của trạm biến áp là", a:[
+"Hạ áp từ lưới phân phối xuống điện áp hạ áp",
+"Phân phối điện trong phân xưởng",
+"Phân phối điện từ lưới hạ áp",
+"Kết nối các thành phần mạng điện"
+], c:0},
+
+{q:"Câu 7: Điện áp thường dùng trong mạng điện hạ áp ở Việt Nam là", a:[
+"500V","100V","220V","320V"
+], c:2},
+
+{q:"Câu 8: Trong tủ điện nhánh có thiết bị nào", a:[
+"Ổ cắm điện","Dây dẫn điện","Phích cắm điện","Thiết bị đóng – cắt điện"
+], c:3},
+
+{q:"Câu 9: Nhiệm vụ của hệ thống điện trong gia đình là", a:[
+"Phân phối điện năng cho các tải tiêu thụ",
+"Bảo vệ chống quá tải",
+"Đo lượng điện tiêu thụ",
+"Kết nối các thiết bị trong lưới điện"
+], c:0},
+
+{q:"Câu 10: Nhiệm vụ của công tắc điện là", a:[
+"Bảo vệ chống quá tải tổng",
+"Bảo vệ chống ngắn mạch",
+"Đóng – cắt nguồn điện từ tủ điện nhánh cho cấp cho tải thường là các đèn chiếu sáng, bình nóng lạnh",
+"Bảo vệ toàn bộ hệ thống điện"
+], c:2},
+
+{q:"Câu 11: Có mấy thiết bị điện phổ biến trong mạng điện gia đình", a:[
+"4 thiết bị","5 thiết bị","6 thiết bị","7 thiết bị"
+], c:2},
+
+{q:"Câu 12: Thiết bị phổ biến trong mạng điện gia đình là", a:[
+"Công tơ điện","Ampe kế","Đồng hồ vạn năng","Điện kế"
+], c:0},
+
+{q:"Câu 13: Chức năng của công tơ điện là", a:[
+"Đóng cắt điện",
+"Đo điện năng tiêu thụ",
+"Bảo vệ quá tải",
+"Kết nối nguồn điện"
+], c:1},
+
+{q:"Câu 14: Điện áp định mức của ổ cắm so với thiết bị tiêu thụ", a:[
+"Lớn hơn điện áp định mức","Nhỏ hơn điện áp định mức","Bằng điện áp định mức","Lớn hơn hoặc bằng điện áp định mức"
+], c:3},
+
+{q:"Câu 15: Biện pháp đảm bảo an toàn khi lắp mạch điện là", a:[
+"Đi chân trần khi lắp",
+"Lắp hoàn chỉnh rồi mới cấp nguồn",
+"Bật nguồn ngay khi lắp xong",
+"Không cần kiểm tra mạch"
+], c:1},
+
+{q:"Câu 16: Lắp mạch điện gồm mấy bước", a:[
+"3 bước","4 bước","5 bước","6 bước"
+], c:3},
+
+{q:"Câu 17: Bước đầu tiên khi lắp mạch điện là", a:[
+"Lắp công tắc",
+"Xác định vị trí lắp đặt",
+"Chuẩn bị vật tư, thiết bị",
+"Nối dây điện"
+], c:2},
+
+{q:"Câu 18: Khi nối mạch điện vào nguồn cần lưu ý", a:[
+"Tuân thủ an toàn điện",
+"Lắp đèn trước",
+"Lắp công tắc đúng vị trí",
+"Lắp công tắc giữa bảng điện"
+], c:0},
+
+{q:"Câu 19: An toàn điện là", a:[
+"Quy định, quy tắc, kĩ năng trong thiết kế và bảo dưỡng",
+"Quy định, quy tắc, kĩ năng trong thiết kế và sử dụng",
+"Quy định, quy tắc, kĩ năng trong thiết kế, sử dụng và bảo dưỡng",
+"Quy định, quy tắc, kĩ năng trong sử dụng và bảo dưỡng"
+], c:2},
+
+{q:"Câu 20: Để đảm bảo an toàn điện, dây dẫn cần", a:[
+"Điện áp lớn hơn hệ thống",
+"Tiết diện lõi dây phải phù hợp công suất",
+"Bố trí kín khó quan sát",
+"Để trần đầu nối"
+], c:1},
+
+{q:"Câu 21: Biện pháp an toàn khi sử dụng điện là", a:[
+"Đặt ổ điện trong tầm với trẻ",
+"Thả diều gần đường dây điện",
+"Sử dụng đúng hướng dẫn NSX",
+"Đến gần khu vực nguy hiểm"
+], c:2},
+
+{q:"Câu 22: Tiết kiệm năng lượng cần thực hiện", a:[
+"từ giai đoạn thiết kế đến sử dụng vận hành hệ thống và chi tiết",
+"Thiết kế và sử dụng",
+"Vận hành thiết bị",
+"Sử dụng và vận hành"
+], c:0},
+
+{q:"Câu 23: Trong thiết kế cần làm gì để tiết kiệm điện", a:[
+"Đảm bảo thông số kĩ thuật Tránh quá tải trạm và đường dây",
+"Chọn công nghệ hiệu suất thấp",
+"Thiết kế mạng điện tùy ý",
+"Giảm hệ số công suất"
+], c:0},
+
+{q:"Câu 24: Lợi ích lắp đặt điện đúng kĩ thuật", a:[
+"Đảm bảo Hoạt động hiệu quả",
+"Tăng thẩm mĩ",
+"Hiệu quả và tiết kiệm điện",
+"Tiết kiệm điện"
+], c:0},
+
+{q:"Câu 25: Tiết kiệm điện không mang lại lợi ích nào", a:[
+"Giảm ô nhiễm môi trường",
+"Phát triển sản xuất",
+" Góp phần Chữa bệnh hiểm nghèo",
+"Giảm sự cố điện"
+], c:2},
+];
+
+shuffle(mcq);
+
+let quiz = document.getElementById("quiz");
+mcq.forEach((x,i)=>{
+  let answers = x.a.map((text,index)=>({text, index}));
+  shuffle(answers);
+  x.shuffledAnswers = answers;
+  quiz.innerHTML += `<div class="question" id="q${i}">
+    <b>${x.q}</b><br>` +
+    answers.map(o=>`<label><input type="radio" name="q${i}" value="${o.index}"> ${o.text}</label>`).join("") +
+  `</div>`;
+});
+
+// ---------------- 6 câu đúng sai ----------------
+let dsq = [
+{
+q:"Câu 1: Tiết kiệm điện năng là giảm tổn thất và sử dụng điện hiệu quả. Để tiết kiệm điện nên:",
+a:[
+"Thiết kế hệ thống truyền tải và phân phối đảm bảo thông số kĩ thuật, tránh quá tải",
+"Lựa chọn thiết bị có công suất phù hợp",
+"Sử dụng thiết bị theo sở thích cá nhân",
+"Tránh tạo hệ thống thông gió và ánh sáng tự nhiên"
+],
+c:[1,1,0,0]
+},
+{
+q:"Câu 2: Các biện pháp an toàn điện trong bảo dưỡng, sửa chữa:",
+a:[
+"Sử dụng bút thử điện trước khi sửa chữa",
+"Kiểm tra, bảo dưỡng dây và thiết bị điện thường xuyên",
+"Bật nguồn điện khi đang sửa chữa",
+"Sử dụng đồ bảo hộ cách điện như: que kim loại để kiểm tra tính dẫn điện"
+],
+c:[1,1,0,0]
+},
+{
+q:"Câu 3: Nhận định đúng về công tơ điện:",
+a:[
+"Công tơ dùng để đo điện năng tiêu thụ của các thiết bị đồ dùng trong gia đình",
+"Iđm là dòng điện lớn nhất công tơ có thể chịu được",
+"Cấp chính xác cho biết sai số của công tơ",
+"Đơn vị đo của công tơ là kilowatt"
+],
+c:[1,0,1,0]
+}
+];
+let dsquiz = document.getElementById("dsquiz");
+dsq.forEach((x,i)=>{
+  dsquiz.innerHTML += `<div class="question" id="dsq${i}">
+    <b>${x.q}</b><br>` +
+    x.a.map((txt,j)=>`
+      <label>
+        <input type="radio" name="q${i}_${j}" value="1"> Đúng
+        <input type="radio" name="q${i}_${j}" value="0"> Sai
+        ${txt}
+      </label>`).join("") +
+  `</div>`;
+});
+// ---------------- Submit ----------------
+function submitAll(){
+  let score1=0, score2=0;
+
+  // Trắc nghiệm
+  mcq.forEach((x,i)=>{
+    let div = document.getElementById("q"+i);
+    let r = document.querySelector(`input[name="q${i}"]:checked`);
+    let user = r ? parseInt(r.value) : null;
+    if(user === x.c) score1++;
+    div.innerHTML += `<div class="answer-detail">Bạn chọn: <span class="${user===x.c?'correct':'wrong'}">${user!==null ? x.a[user]:'Chưa chọn'}${user===x.c?' ✅':' ❌'}</span> - Đáp án: <span class="correct">${x.a[x.c]}</span></div>`;
+  });
+
+  // Đúng sai
+  dsq.forEach((x,i)=>{
+    let div = document.getElementById("dsq"+i);
+    let details = "";
+    x.a.forEach((txt,j)=>{
+      let r = document.querySelector(`input[name="q${i}_${j}"]:checked`);
+      let user = r ? parseInt(r.value) : null;
+      let correct = x.c[j];
+      if(user === correct) score2++;
+      details += `<div class="answer-detail">
+        Ý: ${txt} - Bạn chọn: <span class="${user===correct?'correct':'wrong'}">${user!==null ? (user?'Đúng':'Sai'):'Chưa chọn'}${user===correct?' ✅':' ❌'}</span> - Đáp án: <span class="correct">${correct?'Đúng':'Sai'}</span>
+      </div>`;
+    });
+    div.innerHTML += details;
+  });
+
+  document.getElementById("result").innerText = `Điểm trắc nghiệm: ${score1}/50 - Điểm đúng/sai: ${score2}/28`;
+}
+</script>
+</body>
+</html>
